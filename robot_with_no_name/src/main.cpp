@@ -4,6 +4,7 @@
 #include <Wire.h>
 
 // Internal libraries
+#include <motors.h>
 
 // Display
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -16,11 +17,17 @@ void setup() {
   // display.display();
   // delay(2000);
 
-
+  pinMode(LEFT_MOTOR_FORWARD_PIN, OUTPUT);
+  pinMode(LEFT_MOTOR_BACKWARD_PIN, OUTPUT);
+  pinMode(RIGHT_MOTOR_FORWARD_PIN, OUTPUT);
+  pinMode(RIGHT_MOTOR_BACKWARD_PIN, OUTPUT);
 }
 
 
 void loop() 
 {
-
+  driveStraight(1000);
+  delay(2000);
+  driveStraight(100);
+  delay(2000);
 };
