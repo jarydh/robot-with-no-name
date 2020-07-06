@@ -1,6 +1,9 @@
 // Used for controlling motors
 // Authors: Jaryd
 
+#ifndef MOTORS_H
+#define MOTORS_H
+
 // External Libraries
 #include <Wire.h>
 #include <pinout.h>
@@ -13,8 +16,15 @@
 void driveStraight(int speed);
 
 /*
+* Turns both motors off
+*/
+void stop();
+
+/*
 * Take a value between -SPEED_RESOLUTION (left turn max) and SPEED_RESOLUTION (right turn max)
 * One motor turns forwards, one motor turns backwards at the set speed
 * A value of 0 will turn both motors off
 */
 void turn(int angular_speed);
+
+#endif

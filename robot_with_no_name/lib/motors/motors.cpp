@@ -59,6 +59,10 @@ void driveStraight(int speed)
     pwm_start(RIGHT_MOTOR_BACKWARD_PIN, PMWFREQ, backwards_speed, TICK_COMPARE_FORMAT);
 }
 
+void stop()
+{
+    driveStraight(0);
+}
 
 void turn(int angular_speed)
 {
