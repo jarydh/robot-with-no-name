@@ -5,6 +5,7 @@
 
 // Internal libraries
 #include <motors.h>
+#include <pinout.h>
 
 // Display
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
