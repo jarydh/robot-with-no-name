@@ -6,5 +6,5 @@
 #define RIGHT_MOTOR_BACKWARD_PIN PA_3
 
 //beacon finding phototransistors
-// #define IR_LEFT PA4
-// #define IR_RIGHT PA5
+#define IR_LEFT PA4
+#define IR_RIGHT PA5

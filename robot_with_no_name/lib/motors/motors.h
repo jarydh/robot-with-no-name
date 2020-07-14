@@ -3,6 +3,7 @@
 
 // External Libraries
 #include <Wire.h>
+#include "pinout.h"
 
 
 /*

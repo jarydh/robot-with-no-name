@@ -5,7 +5,8 @@
 
 // Internal libraries
 #include <motors.h>
-#include <pinout.h>
+#include "pinout.h"
+
 
 // Display
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -22,6 +23,9 @@ void setup() {
   pinMode(LEFT_MOTOR_BACKWARD_PIN, OUTPUT);
   pinMode(RIGHT_MOTOR_FORWARD_PIN, OUTPUT);
   pinMode(RIGHT_MOTOR_BACKWARD_PIN, OUTPUT);
+
+  pinMode(IR_LEFT, INPUT);
+  pinMode(IR_RIGHT, INPUT);
 }
 
 
