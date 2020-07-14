@@ -4,6 +4,7 @@
 #include <Wire.h>
 
 // Internal libraries
+#include <pinout.h>
 #include <motors.h>
 
 // Display

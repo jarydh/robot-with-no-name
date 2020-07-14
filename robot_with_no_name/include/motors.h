@@ -4,12 +4,6 @@
 // External Libraries
 #include <Wire.h>
 
-// Motor pins, change these for each person
-#define LEFT_MOTOR_FORWARD_PIN PA_0
-#define LEFT_MOTOR_BACKWARD_PIN PA_1
-#define RIGHT_MOTOR_FORWARD_PIN PA_2
-#define RIGHT_MOTOR_BACKWARD_PIN PA_3
-
 /*
 * Take a value between -SPEED_RESOLUTION (backwards max) and SPEED_RESOLUTION (forwards max)
 * Both motors will turn at the same speed in the same direction
