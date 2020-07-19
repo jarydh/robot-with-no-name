@@ -1,7 +1,7 @@
 // Used for controlling motors
 // Authors: Jaryd
 
-#include <motors.h>
+#include "motors.h"
 #include <pinout.h>
 
 // For some reason, setting a value of 0 doesn't seem to turn the motors off
@@ -9,7 +9,7 @@
 #define PMWFREQ 2000
 
 // Min and max PWM values
-#define MIN_MOTOR_PWM 22000  // Note this will need to be adjusted for the friction on the wheels and the voltage
+#define MIN_MOTOR_PWM 24000  // Note this will need to be adjusted for the friction on the wheels and the voltage
 #define MAX_MOTOR_PWM 65000
 
 #define SPEED_RESOLUTION 1000
