@@ -2,7 +2,7 @@
 // Authors: Jaryd
 
 #include "motors.h"
-#include <pinout.h>
+#include "pinout.h"
 
 // For some reason, setting a value of 0 doesn't seem to turn the motors off
 #define MOTOR_OFF 1
