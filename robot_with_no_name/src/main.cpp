@@ -33,31 +33,23 @@ void setup() {
   display.clearDisplay();
   // Displays Adafruit logo by default. call clearDisplay immediately if you don't want this.
   display.display();
-    delay(5000);
+  // delay(5000);
 }
 
 
 void loop() 
 {
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0,0);
+  // display.clearDisplay();
+  // display.setTextSize(1);
+  // display.setTextColor(SSD1306_WHITE);
+  // display.setCursor(0,0);
   
   // display.println("hello world");
   // display.display();
   
-  // driveStraight(100);
-  // delay(2000);
-  // driveStraight(-100);
-  // delay(2000);
-  // driveStraight(0);
-
-  pointAtBeacon(20,display);
+  pointAtBeacon(20, display);
   //goToBeacon(100,20,display);
 
-  //pointAtBeacon(20, display);
-  //goToBeacon(500,500);
 
   // delay(20000);
 };

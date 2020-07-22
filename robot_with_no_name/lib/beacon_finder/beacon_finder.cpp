@@ -11,12 +11,12 @@
 
 #define STOP 0
 
-#define STOPPING_ERROR 20 //The average error over SAMPLING_SIZE samples to consider the beacon found
-#define PICKUP_STRENGTH 200 //The minimum strength at which a signal is considered to be coming from the beacon
-#define STOPPING_STRENGTH 700 //The strength at which the beacon is considered found, and the robot is ready to drop the can
+#define STOPPING_ERROR 10 //The average error over SAMPLING_SIZE samples to consider the beacon found
+#define PICKUP_STRENGTH 30 //The minimum strength at which a signal is considered to be coming from the beacon
+#define STOPPING_STRENGTH 300 //The strength at which the beacon is considered found, and the robot is ready to drop the can
 #define TIMEOUT 100000 //Milliseconds before giving up on finding the beacon
 
-#define LOCKON_INTERVAL 2000 //milliseconds between  locking on to the beacon
+#define LOCKON_INTERVAL 500 //milliseconds between  locking on to the beacon
 
 #define GAIN 1/100
 #define P_GAIN 35
@@ -26,7 +26,7 @@
 *If you'd like to add integral gain, you'll have to uncomment various lines,
 *and swap the line that calculates speed
 */
-#define SAMPLING_SIZE 10 //the number of samples used to determine the slope 
+#define SAMPLING_SIZE 30 //the number of samples used to determine the slope 
 
 bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
     long starting_time = millis();
@@ -107,12 +107,13 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
         //i = I_GAIN  * error + i;
         
         errorList[0] = (int)error-lastError;
-        
+
         slope = 0;
         for (int i = SAMPLING_SIZE - 1; i >= 1; i--){
             errorList[i] = errorList[i-1];
             slope += errorList[i];
         }
+
   
         d = D_GAIN * slope / SAMPLING_SIZE; 
         lastError = error;
