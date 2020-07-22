@@ -5,7 +5,6 @@
 #include <Wire.h>
 #include <pinout.h>
 
-
 /*
 * Take a value between -SPEED_RESOLUTION (backwards max) and SPEED_RESOLUTION (forwards max)
 * Both motors will turn at the same speed in the same direction
