@@ -43,21 +43,22 @@ void setup() {
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.display();
-  can_finder.findCan();
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  delay(50);
+  // can_finder.findCan();
+  // pointAtBeacon(20, display);
+  goToBeacon(20, 20, display);
 }
 
 
 void loop() 
 {
-  // display.clearDisplay();
-  // display.setTextSize(1);
-  // display.setTextColor(SSD1306_WHITE);
-  // display.setCursor(0,0);
-  
   // display.println("hello world");
   // display.display();
   
-  pointAtBeacon(20, display);
   //goToBeacon(100,20,display);
 
 

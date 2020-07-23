@@ -17,12 +17,12 @@ int sweep_start_range = 50;
 // Sonar values
 const int num_sonar_readings = NUM_SONAR_READINGS;
 #define ECHO_RANGE 10 // Unless right up against a can, anything <10 is an echo
-#define CORRECTION_SCALE 3 // Every time the robot moves forward, it goes about 1/3 of a cm
+#define CORRECTION_SCALE 2 // Every time the robot moves forward, it goes about 1/3 of a cm
 
 // Driving towards can
 const int forwards_speed = 40;
-const int reduced_speed = 20; // slow down when closer to can
-const int reduced_range = 20; // cm
+const int reduced_moving_time = 20; // slow down when closer to can
+const int reduced_range = 10; // cm
 const int stop_range = 7; // cm
 
 int canFinder::readSonar()
@@ -56,7 +56,7 @@ bool canFinder::findCan()
     bool is_clockwise = true;
     sweep_range = sweep_start_range;
 
-    while(true) // Figure out when to stop this
+    while(sweep_range < 500) // Figure out when to stop this
     {
         if(sweep(is_clockwise, sweep_range))
         {
@@ -82,8 +82,9 @@ bool canFinder::findCan()
 // Returns true if it detects something within range and drives towards it, false if it completes the sweep
 bool canFinder::sweep(bool is_clockwise, int range)
 {
+    int moving_time;
     bool found_can = false;
-    uint32_t wait_time;
+    uint32_t stopped_time;
     int correction = 0;
 
     // Value between 0 to 1000 for sweeping
@@ -101,11 +102,13 @@ bool canFinder::sweep(bool is_clockwise, int range)
         display_ptr.setCursor(0,0);
 
         int sonar_read = readSonar();
+        moving_time = 100 - sonar_read / 5;
+
         // Found can
         if(sonar_read + correction / CORRECTION_SCALE < range - 2 && (found_can || sonar_read > ECHO_RANGE))
         {
             found_can = true;
-            wait_time = 0;
+            stopped_time = 0;
             correction ++;
 
             // At the can
@@ -122,7 +125,8 @@ bool canFinder::sweep(bool is_clockwise, int range)
                 display_ptr.print("Close to can! Read range: ");
                 display_ptr.println(sonar_read);
                 display_ptr.display();
-                driveStraight(reduced_speed);
+                moving_time = reduced_moving_time;
+                driveStraight(forwards_speed);
                 start_time = millis();
             }
             else
@@ -137,18 +141,19 @@ bool canFinder::sweep(bool is_clockwise, int range)
         // No can
         else
         {
-            wait_time = 50;
+            stopped_time = 50;
             if (is_clockwise)
                 turn(sweep_speed);
             else
                 turn(sweep_speed * -1);
         }
 
-        delay(100);
+
+        delay(moving_time);
 
         stop();
 
-        delay(wait_time);
+        delay(stopped_time);
 
         display_ptr.print("Search range: ");
         display_ptr.println(range);
