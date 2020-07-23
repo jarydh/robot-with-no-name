@@ -1,5 +1,5 @@
 // Used for moving to an IR beacon
-// Authors: Thomas
+// Authors: Thomas, Jaryd
 
 // External Libraries
 #include <Wire.h>
