@@ -31,4 +31,8 @@
 #define SONAR_ECHO_PIN PB9
 #define SONAR_TRIGGER_PIN PB8
 
+// Servo pins
+#define CLAW_ARMS_SERVO_PIN PB1
+#define CLAW_MOUNT_SERVO_PIN PB0
+
 #endif
