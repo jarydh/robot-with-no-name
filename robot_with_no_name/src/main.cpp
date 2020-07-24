@@ -14,7 +14,6 @@
 // Sonar sensor
 #define SONAR_TIMEOUT 10000UL  // Time in micro seconds before sonar times out, determines range and how long the ping will block for
 Ultrasonic sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_TIMEOUT);
-unsigned int sonar_distance;
 
 // Can finder object
 // canFinder can_finder(sonar, display);
@@ -23,10 +22,6 @@ unsigned int sonar_distance;
 // Servo arm_servo;
 // Servo pivot_servo;
 // Claw claw(arm_servo, pivot_servo, display);
-
-
-int sonar_range = 100;  // cm
-int sonar_read;
 
 void setup() {
   // IR Pins
@@ -43,14 +38,6 @@ void setup() {
   // arm_servo.attach(CLAW_ARMS_SERVO_PIN);
   // pivot_servo.attach(CLAW_PIVOT_SERVO_PIN);
 
-  // display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  // display.display();
-  // display.clearDisplay();
-  // display.setTextSize(1);
-  // display.setTextColor(SSD1306_WHITE);
-  // display.setCursor(0,0);
-  // delay(50);
-
   // can_finder.findCan();
   // pointAtBeacon(20, display);
   // goToBeacon(20, 20, display);
@@ -59,4 +46,10 @@ void setup() {
 
 void loop() 
 {
+  // 2 primary loops: finding can, and finding bin
 };
+
+// can-finding loop
+void find_can() {
+
+}

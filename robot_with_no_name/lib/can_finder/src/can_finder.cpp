@@ -96,10 +96,10 @@ bool canFinder::sweep(bool is_clockwise, int range)
 
     while (millis() - start_time < sweep_time)
     {
-        display_ptr.clearDisplay();
-        display_ptr.setTextSize(1);
-        display_ptr.setTextColor(SSD1306_WHITE);
-        display_ptr.setCursor(0,0);
+        // display_ptr.clearDisplay();
+        // display_ptr.setTextSize(1);
+        // display_ptr.setTextColor(SSD1306_WHITE);
+        // display_ptr.setCursor(0,0);
 
         int sonar_read = readSonar();
         moving_time = 100 - sonar_read / 5;
