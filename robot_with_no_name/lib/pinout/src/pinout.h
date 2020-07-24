@@ -12,27 +12,29 @@
 #define PINOUT_H
 
 //motors
-#define LEFT_MOTOR_FORWARD_PIN PA_2
-#define LEFT_MOTOR_BACKWARD_PIN PA_3
-#define RIGHT_MOTOR_FORWARD_PIN PA_0
-#define RIGHT_MOTOR_BACKWARD_PIN PA_1
+#define LEFT_MOTOR_FORWARD_PIN PB_6
+#define LEFT_MOTOR_BACKWARD_PIN PB_7
+#define RIGHT_MOTOR_FORWARD_PIN PB_8
+#define RIGHT_MOTOR_BACKWARD_PIN PB_9
 
-// For some reason, we need to use the int pins otherwise the sonar breaks
-#define LEFT_MOTOR_FORWARD_PIN_INT A0
-#define LEFT_MOTOR_BACKWARD_PIN_INT A1
-#define RIGHT_MOTOR_FORWARD_PIN_INT A2
-#define RIGHT_MOTOR_BACKWARD_PIN_INT A3
+// need integer types for Arduino-based libraries
+#define LEFT_MOTOR_FORWARD_PIN_INT PB6
+#define LEFT_MOTOR_BACKWARD_PIN_INT PB7
+#define RIGHT_MOTOR_FORWARD_PIN_INT PB8
+#define RIGHT_MOTOR_BACKWARD_PIN_INT PB9
 
 //beacon finding phototransistors
-#define IR_LEFT PA4
-#define IR_RIGHT PA5
+// TODO: define these when hooked up
+// #define IR_LEFT PA4
+// #define IR_RIGHT PA5
 
 // Sonar pins
-#define SONAR_ECHO_PIN PB9
-#define SONAR_TRIGGER_PIN PB8
+#define SONAR_ECHO_PIN PA0
+#define SONAR_TRIGGER_PIN PA1
 
 // Servo pins
-#define CLAW_ARMS_SERVO_PIN PB1
-#define CLAW_PIVOT_SERVO_PIN PB0
+// TODO: define these when hooked up
+// #define CLAW_ARMS_SERVO_PIN PB1
+// #define CLAW_PIVOT_SERVO_PIN PB0
 
 #endif
