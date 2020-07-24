@@ -1,5 +1,4 @@
 // External libraries
-#include <Servo.h>
 #include <Wire.h>
 #include <Adafruit_SSD1306.h>
 
@@ -9,6 +8,7 @@
 #include "beacon_finder.h"
 #include "can_finder.h"
 #include "claw.h"
+#include "pwm_servo.h"
 
 //operating modes
 #define SETUP_DISPLAY true
@@ -31,8 +31,8 @@ unsigned int sonar_distance;
 canFinder can_finder(sonar, display);
 
 // Claw
-Servo arm_servo;
-Servo pivot_servo;
+pwmServo arm_servo(CLAW_ARMS_SERVO_PIN);
+pwmServo pivot_servo(CLAW_PIVOT_SERVO_PIN);
 Claw claw(arm_servo, pivot_servo, display);
 
 
@@ -54,8 +54,8 @@ void setup() {
   pinMode(RIGHT_MOTOR_BACKWARD_PIN_INT, OUTPUT);
 
   // Servo pins
-  arm_servo.attach(CLAW_ARMS_SERVO_PIN);
-  pivot_servo.attach(CLAW_PIVOT_SERVO_PIN);
+  pinMode(CLAW_PIVOT_SERVO_PIN_INT, OUTPUT);
+  pinMode(CLAW_ARMS_SERVO_PIN_INT, OUTPUT);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   display.display();
@@ -64,10 +64,11 @@ void setup() {
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0,0);
 
+  arm_servo.write(ARM_OPEN);
+  pivot_servo.write(PIVOT_UP);
+
   while(digitalRead(START_BUTTON) == HIGH)
   {
-    arm_servo.write(ARM_CLOSED);
-    pivot_servo.write(PIVOT_UP);
     display.clearDisplay();
     display.setCursor(0,0);
     display.println("Press button to start...");
@@ -81,16 +82,12 @@ void setup() {
 
 void loop() 
 {
-  // claw.dropCan();
-  // delay(3000);
-  driveStraight(20);
-  delay(1000);
 
-  // can_finder.findCan();
+  can_finder.findCan();
 
-  // claw.pickUpCan();
-  // delay(3000);
+  claw.pickUpCan();
+  delay(3000);
 
-  // claw.dropCan();
-  // delay(10000);
+  claw.dropCan();
+  delay(10000);
 };
