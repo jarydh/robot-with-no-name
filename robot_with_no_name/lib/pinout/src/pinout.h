@@ -32,8 +32,11 @@
 #define SONAR_TRIGGER_PIN PA1
 
 // Servo pins
-#define CLAW_ARMS_SERVO_PIN PB1
-#define CLAW_PIVOT_SERVO_PIN PB0
+#define CLAW_ARMS_SERVO_PIN_INT PB1
+#define CLAW_PIVOT_SERVO_PIN_INT PB0
+
+#define CLAW_ARMS_SERVO_PIN PB_1
+#define CLAW_PIVOT_SERVO_PIN PB_0
 
 // config for robot
 
