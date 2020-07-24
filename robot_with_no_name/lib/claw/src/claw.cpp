@@ -5,18 +5,14 @@
 
 #define CLAW_DEBUG 0
 
-// Servo angles
-#define PIVOT_DOWN 120
-#define PIVOT_UP 180
-#define ARM_CLOSED 180
-#define ARM_OPEN 160
-
 bool Claw::pickUpCan()
 {
     arm_servo_ptr.write(ARM_OPEN);
+    delay(500);
     pivot_servo_ptr.write(PIVOT_DOWN);
-    delay(1000);
+    delay(500);
     arm_servo_ptr.write(ARM_CLOSED);
+    delay(500);
     pivot_servo_ptr.write(PIVOT_UP);
 
     if (CLAW_DEBUG)

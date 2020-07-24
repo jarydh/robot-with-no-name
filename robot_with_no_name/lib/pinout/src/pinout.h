@@ -11,6 +11,9 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
+// Start button
+#define START_BUTTON PB12
+
 //motors
 #define LEFT_MOTOR_FORWARD_PIN PA_2
 #define LEFT_MOTOR_BACKWARD_PIN PA_3

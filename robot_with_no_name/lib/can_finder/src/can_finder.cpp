@@ -6,9 +6,6 @@
 #include "motors.h"
 #include "sensor_math.h"
 
-// For every 1cm of range, we get 56us of timeout
-#define TIMEOUT_TO_RANGE_SLOPE 56
-
 // Sweep constants 
 #define SWEEP_ANGLE 180  // angle in degrees to sweep
 const int sweep_range_increment = 25;
@@ -22,8 +19,11 @@ const int num_sonar_readings = NUM_SONAR_READINGS;
 // Driving towards can
 const int forwards_speed = 40;
 const int reduced_moving_time = 20; // slow down when closer to can
-const int reduced_range = 10; // cm
-const int stop_range = 7; // cm
+const int reduced_range = 15; // cm
+const int stop_range = 10; // cm
+
+// For every 1cm of range, we get 56us of timeout
+#define TIMEOUT_TO_RANGE_SLOPE 56
 
 int canFinder::readSonar()
 {

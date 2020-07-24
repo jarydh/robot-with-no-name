@@ -40,6 +40,9 @@ int sonar_range = 100;  // cm
 int sonar_read;
 
 void setup() {
+  // Start button 
+  pinMode(START_BUTTON, INPUT_PULLUP);
+
   // IR Pins
   pinMode(IR_LEFT, INPUT);
   pinMode(IR_RIGHT, INPUT);
@@ -60,8 +63,16 @@ void setup() {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0,0);
-  delay(50);
 
+  while(digitalRead(START_BUTTON) == HIGH)
+  {
+    arm_servo.write(ARM_CLOSED);
+    pivot_servo.write(PIVOT_UP);
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.println("Press button to start...");
+    display.display();
+  }
   // can_finder.findCan();
   // pointAtBeacon(20, display);
   // goToBeacon(20, 20, display);
@@ -70,6 +81,16 @@ void setup() {
 
 void loop() 
 {
-  driveStraight(100);
-  delay(50);
+  // claw.dropCan();
+  // delay(3000);
+  driveStraight(20);
+  delay(1000);
+
+  // can_finder.findCan();
+
+  // claw.pickUpCan();
+  // delay(3000);
+
+  // claw.dropCan();
+  // delay(10000);
 };

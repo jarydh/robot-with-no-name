@@ -9,6 +9,11 @@
 
 #include <Servo.h>
 
+// Servo angles
+#define PIVOT_DOWN 135
+#define PIVOT_UP 180
+#define ARM_CLOSED 165
+#define ARM_OPEN 120
 
 class Claw {
     public:
