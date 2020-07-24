@@ -16,6 +16,8 @@ const int num_sonar_readings = NUM_SONAR_READINGS;
 #define ECHO_RANGE 10 // Unless right up against a can, anything <10 is an echo
 #define CORRECTION_SCALE 2 // Every time the robot moves forward, it goes about 1/3 of a cm
 
+#define MISSED_CAN_RANGE 10
+
 // Driving towards can
 const int forwards_speed = 40;
 const int reduced_moving_time = 20; // slow down when closer to can
@@ -89,7 +91,7 @@ bool canFinder::sweep(bool is_clockwise, int range)
 
     // Value between 0 to 1000 for sweeping
     uint16_t sweep_speed = 20; // TODO figure out how to set this
-    uint32_t sweep_time = 4000; // TODO figure out how to set this
+    uint32_t sweep_time = 7000; // TODO figure out how to set this
 
     setSonarRange(range);
     uint32_t start_time = millis();
@@ -102,7 +104,7 @@ bool canFinder::sweep(bool is_clockwise, int range)
         display_ptr.setCursor(0,0);
 
         int sonar_read = readSonar();
-        moving_time = 100 - sonar_read / 5;
+        moving_time = 80 - sonar_read / 10;
 
         // Found can
         if(sonar_read + correction / CORRECTION_SCALE < range - 2 && (found_can || sonar_read > ECHO_RANGE))
@@ -114,6 +116,13 @@ bool canFinder::sweep(bool is_clockwise, int range)
             // At the can
             if(sonar_read <= stop_range)
             {
+                // Turn a little extra to allign with the can
+                if (is_clockwise)
+                    turn(sweep_speed);
+                else
+                    turn(sweep_speed * -1);
+
+                delay(20);
                 display_ptr.print("Arrived at can!");
                 display_ptr.display();
                 stop();
@@ -162,4 +171,20 @@ bool canFinder::sweep(bool is_clockwise, int range)
 
     // Did not find can
     return false;
+}
+
+// Returns true if successfully picked up a can, false otherwise
+bool canFinder::checkCan()
+{
+    // TODO fix this with IR
+    // resetSonar();
+    // if (readSonar() >= MISSED_CAN_RANGE)
+    // {
+    //     return true;
+    // }
+    // else
+    // {
+    //     return false;
+    // }
+    return true;
 }

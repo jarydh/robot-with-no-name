@@ -23,7 +23,6 @@ bool Claw::pickUpCan()
         display_ptr.display();
     }
     
-    // TODO use IR sensor to determine if picked up successfully
     return true;
 }
 
@@ -41,6 +40,5 @@ bool Claw::dropCan()
         display_ptr.display();
     }
     
-    // TODO use IR sensor to determine if picked up successfully
     return true;
 }

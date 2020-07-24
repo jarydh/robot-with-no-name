@@ -1,36 +1,40 @@
 // Used for moving to an IR beacon
-// Authors: Thomas
+// Authors: Thomas, Jaryd
 
 #include "beacon_finder.h"
 #include "motors.h"
 #include "pinout.h"
 
 #include <Adafruit_SSD1306.h>
+#include <math.h>
 
-#define IR_DEBUG true
+#define IR_DEBUG 1
 
-#define STOPPING_ERROR 5 //The average error over SAMPLING_SIZE samples to consider the beacon found
-#define PICKUP_STRENGTH 60 //The minimum strength at which a signal is considered to be coming from the beacon
-#define STOPPING_STRENGTH 300 //The strength at which the beacon is considered found, and the robot is ready to drop the can
+// IR values
+#define STOPPING_ERROR 30 //The average error over SAMPLING_SIZE samples to consider the beacon found
+#define PICKUP_STRENGTH 900 //The minimum strength at which a signal is considered to be coming from the beacon
+#define STOPPING_STRENGTH 2000 //The strength at which the beacon is considered found, and the robot is ready to drop the can
 #define TIMEOUT 60000 //Milliseconds before giving up on finding the beacon
 
 #define LOCKON_INTERVAL 2000 //milliseconds between locking on to the beacon
 
-#define GAIN 1/100
-#define P_GAIN 35
-#define D_GAIN 19
-//#define I_GAIN 1
-/*I have not been able to get any kind of improvement from integral gain. 
-*If you'd like to add integral gain, you'll have to uncomment various lines,
-*and swap the line that calculates speed
-*/
+// Sonar values
+#define SONAR_FOUND_BIN 10 //cm
+
+// PID values
+#define GAIN 1/20
+#define P_GAIN 3
+#define D_GAIN 100
+
 #define SAMPLING_SIZE 5 //the number of samples used to determine the derivative_error_sum 
+
+#define DEFAULT_PID_SPEED 100
 
 bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
     int reading_r = analogRead(IR_RIGHT);
     int reading_l = analogRead(IR_LEFT);
 
-    long last_direction_check_time = millis();
+    uint32_t start_time = millis();
 
     int strength = reading_l + reading_r;
 
@@ -65,11 +69,12 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
 
         strength = reading_l + reading_r;
 
-        if (millis() - last_direction_check_time > TIMEOUT)
+        if (millis() - start_time > TIMEOUT)
         {
             if(IR_DEBUG)
             {
                 display.clearDisplay();
+                display.setCursor(0,0);
                 display.println("FAILED TO FIND BEACON");
                 display.display();
                 delay(1000);
@@ -77,11 +82,28 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
             return false;
         }      
     }
-
     // Found the beacon
     stop();
 
+    return true;
+}
 
+bool pidToBeacon(Adafruit_SSD1306 display, canFinder can_finder)
+{
+    int reading_r = analogRead(IR_RIGHT);
+    int reading_l = analogRead(IR_LEFT);
+
+    if(IR_DEBUG)
+    {
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.println("Starting PID...");
+        display.display();
+    }
+
+    can_finder.setSonarRange(SONAR_FOUND_BIN + 5);
+    can_finder.resetSonar();
+    
     //begin PID control
     int p = 0;
     int d = 0;
@@ -89,13 +111,19 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
     int derivative_error_sum = 0;
     int speed = 0;
 
+    int sonar_read;
+
     int error = reading_r - reading_l;
-    int lastError;
-
+    int lastError = error;
+    int strength = reading_r + reading_l;
     int num_loops = 0;
+    int ping_sonar_count = 1;
+    int ping_sonar_loops = 1000;
 
-    //while(error > STOPPING_ERROR && strength > PICKUP_STRENGTH)
-    while(error > STOPPING_ERROR || strength < PICKUP_STRENGTH)
+    bool at_bin = false;
+
+    // while(abs(error) > STOPPING_ERROR || strength < STOPPING_STRENGTH)
+    while (true)
     {    
         reading_r = analogRead(IR_RIGHT);
         reading_l = analogRead(IR_LEFT);
@@ -106,7 +134,7 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
 
         p = P_GAIN * error;
         
-        derivative_error_list[0] = (int)error-lastError;
+        derivative_error_list[0] = error - lastError;
 
         derivative_error_sum = 0;
         for (int i = SAMPLING_SIZE - 1; i >= 1; i--){
@@ -119,7 +147,8 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
         
         speed = (int)(p+d)*GAIN;
 
-        if(IR_DEBUG){
+        while(digitalRead(START_BUTTON) == LOW){
+            stop();
             display.clearDisplay();
             display.setCursor(0,0);
             display.println("PID");
@@ -132,12 +161,49 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
             display.print("speed:");
             display.println(speed);
             display.display();
+            delay(10);
         }
 
         // Make sure derivative error list is fully initiallized
         if (num_loops >= SAMPLING_SIZE)
         {
-            turn(speed * -1);
+            if(at_bin)
+            {
+                turn(speed);
+            }
+            else
+            {
+                setPIDMotors(speed);
+            }
+        }
+
+        if (ping_sonar_count >= ping_sonar_loops)
+        {
+            stop();
+            sonar_read = can_finder.readSonar();
+            display.clearDisplay();
+            display.setCursor(0,0);
+            display.println("Sonar Read:");
+            display.println(sonar_read);
+            display.display();
+            if(sonar_read <= SONAR_FOUND_BIN && !at_bin)
+            {
+                at_bin = true;
+                break;
+            }
+            else if(at_bin && sonar_read <= SONAR_FOUND_BIN && abs(error) < STOPPING_ERROR)
+            {
+                break;
+            }
+            else if (sonar_read > SONAR_FOUND_BIN )
+            {
+                at_bin = false;
+            }
+            ping_sonar_count = 1;
+        }
+        else
+        {
+            ping_sonar_count++;
         }
 
         num_loops++;
@@ -146,44 +212,78 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
     stop();
 
     if(IR_DEBUG){
-        display.println("Pointing at the bin");
+        display.clearDisplay();
+        display.setCursor(0,0);
+        display.println("Done PID!");
+        display.print("right:");
+        display.println(reading_r);
+        display.print("left:");
+        display.println(reading_l);
+        display.print("error:");
+        display.println(error);
+        display.print("speed:");
+        display.println(speed);
         display.display();
     }
 
+    // TODO figure out if PID ever will fail
     return true;
 }
 
- bool goToBeacon(int speed, int angular_speed, Adafruit_SSD1306 display)
- {
-    uint32_t last_direction_check_time = millis();
-    int strength;
+/*
+* Sets motors for PID given error
+*/
+void setPIDMotors(int speed)
+{
+    if(speed > 0)
+    {
+        setMotorSpeed(motorSides::LEFT, DEFAULT_PID_SPEED + speed);
+        setMotorSpeed(motorSides::RIGHT, DEFAULT_PID_SPEED - speed);
+    }
+    else if(speed < 0)
+    {
+        setMotorSpeed(motorSides::RIGHT, DEFAULT_PID_SPEED + speed * -1);
+        setMotorSpeed(motorSides::LEFT, DEFAULT_PID_SPEED - speed * -1);
+    }
+}
 
-    // While the robot isn't close to the beacon
-    do
-    { 
-        if(millis() - last_direction_check_time > LOCKON_INTERVAL)
-        {
-            if (!pointAtBeacon(angular_speed, display))
-            {
-                return false;
-            }
+//  bool goToBeacon(int speed, int angular_speed, Adafruit_SSD1306 display)
+//  {
+//     uint32_t last_direction_check_time = millis();
+//     int strength, error, reading_r, reading_l;
+//     pointAtBeacon(angular_speed, display);
 
-            last_direction_check_time = millis();
-        }
-        else
-        {
-            // Drive straight until timeout happens again
-            driveStraight(speed);
-        }
+//     // While the robot isn't close to the beacon
+//     do
+//     { 
+//         if(millis() - last_direction_check_time > LOCKON_INTERVAL)
+//         {
+//             if (!pidToBeacon(display))
+//             {
+//                 return false;
+//             }
+
+//             last_direction_check_time = millis();
+//         }
+//         else
+//         {
+//             // Drive straight until timeout happens again
+//             driveStraight(speed);
+//         }
         
-        strength = analogRead(IR_RIGHT) + analogRead(IR_LEFT);
-    } while(strength < STOPPING_STRENGTH);
+//         reading_r = analogRead(IR_RIGHT);
+//         reading_l = analogRead(IR_LEFT);
+
+//         error = reading_r - reading_l;
+
+//         strength = reading_r + reading_l;
+//     } while(strength < STOPPING_STRENGTH || error > STOPPING_ERROR);
 
 
-    stop();
+//     stop();
 
-    display.println("You have reached your destination. Thank you for choosing robot express.");
-    display.display();
-    delay(3000);
-    return true;
-}
+//     display.println("You have reached your destination. Thank you for choosing robot express.");
+//     display.display();
+//     delay(3000);
+//     return true;
+// }

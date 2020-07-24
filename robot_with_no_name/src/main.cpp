@@ -74,20 +74,29 @@ void setup() {
     display.println("Press button to start...");
     display.display();
   }
-  // can_finder.findCan();
-  // pointAtBeacon(20, display);
-  // goToBeacon(20, 20, display);
+  display.clearDisplay();
 }
 
 
 void loop() 
 {
+  do
+  {
+    can_finder.findCan();
+    claw.pickUpCan();
+    delay(1500);
+  } while (!can_finder.checkCan());
 
-  can_finder.findCan();
+  pointAtBeacon(20, display);
+  pidToBeacon(display, can_finder);
 
-  claw.pickUpCan();
-  delay(3000);
+
+  delay(50);
 
   claw.dropCan();
-  delay(10000);
+
+  driveStraight(-100);
+  delay(500);
+  turn(100);
+  delay(500);
 };

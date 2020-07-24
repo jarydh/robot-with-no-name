@@ -8,6 +8,12 @@
 #include <Wire.h>
 #include <pinout.h>
 
+enum motorSides
+{
+    LEFT,
+    RIGHT
+};
+
 /*
 * Take a value between -SPEED_RESOLUTION (backwards max) and SPEED_RESOLUTION (forwards max)
 * Both motors will turn at the same speed in the same direction
@@ -26,5 +32,16 @@ void stop();
 * A value of 0 will turn both motors off
 */
 void turn(int angular_speed);
+
+/*
+* Drives a single motor at a given speed (0 to 1000)
+*/
+void driveMotor(PinName motor, int speed);
+
+/*
+* Drives a single motor at a given speed (-1000 to 1000)
+*/
+void setMotorSpeed(motorSides side, int speed);
+
 
 #endif

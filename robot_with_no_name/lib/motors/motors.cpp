@@ -4,6 +4,8 @@
 #include "motors.h"
 #include "pinout.h"
 
+#include <math.h>
+
 // For some reason, setting a value of 0 doesn't seem to turn the motors off
 #define MOTOR_OFF 1
 #define PMWFREQ 2000
@@ -64,6 +66,7 @@ void stop()
     driveStraight(0);
 }
 
+
 void turn(int angular_speed)
 {
     int left_forward_speed = MOTOR_OFF;
@@ -108,4 +111,54 @@ void turn(int angular_speed)
     pwm_start(LEFT_MOTOR_BACKWARD_PIN, PMWFREQ, left_backward_speed, TICK_COMPARE_FORMAT);
     pwm_start(RIGHT_MOTOR_FORWARD_PIN, PMWFREQ, right_forward_speed, TICK_COMPARE_FORMAT);
     pwm_start(RIGHT_MOTOR_BACKWARD_PIN, PMWFREQ, right_backward_speed, TICK_COMPARE_FORMAT);
+}
+
+void driveMotor(PinName motor_pin, int speed)
+{
+    if (speed == MOTOR_OFF)
+    {
+        pwm_start(motor_pin, PMWFREQ, MOTOR_OFF, TICK_COMPARE_FORMAT);
+        return;
+    }
+    int linearized_speed = motor_linearize_slope * speed + MIN_MOTOR_PWM;
+    pwm_start(motor_pin, PMWFREQ, linearized_speed, TICK_COMPARE_FORMAT);
+}
+
+void setMotorSpeed(motorSides side, int speed)
+{    
+    if (side == LEFT)
+    {
+        if(speed > 0)
+        {
+            driveMotor(LEFT_MOTOR_FORWARD_PIN, speed);
+            driveMotor(LEFT_MOTOR_BACKWARD_PIN, MOTOR_OFF);
+        }
+        else if (speed < 0)
+        {
+            driveMotor(LEFT_MOTOR_BACKWARD_PIN, speed * -1);
+            driveMotor(LEFT_MOTOR_FORWARD_PIN, MOTOR_OFF);
+        }
+        else
+        {
+            driveMotor(LEFT_MOTOR_BACKWARD_PIN, MOTOR_OFF);
+            driveMotor(LEFT_MOTOR_FORWARD_PIN, MOTOR_OFF);
+        }
+    }
+    else if (side == RIGHT)
+    {
+        if(speed > 0)
+        {
+            driveMotor(RIGHT_MOTOR_FORWARD_PIN, speed);
+            driveMotor(RIGHT_MOTOR_BACKWARD_PIN, MOTOR_OFF);
+        }
+        else if (speed < 0)
+        {
+            driveMotor(RIGHT_MOTOR_BACKWARD_PIN, speed * -1);
+        } 
+        else
+        {
+            driveMotor(RIGHT_MOTOR_BACKWARD_PIN, MOTOR_OFF);
+            driveMotor(RIGHT_MOTOR_FORWARD_PIN, MOTOR_OFF);
+        }
+    }
 }
