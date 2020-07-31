@@ -35,6 +35,12 @@
 #define CLAW_ARMS_SERVO_PIN PB1
 #define CLAW_PIVOT_SERVO_PIN PB0
 
-// configurable constants
+// config for robot
+
+// Servo angles
+#define PIVOT_DOWN 120
+#define PIVOT_UP 180
+#define ARM_CLOSED 180
+#define ARM_OPEN 160
 
 #endif
