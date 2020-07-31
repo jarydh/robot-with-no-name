@@ -37,7 +37,19 @@
 
 // config for robot
 
-// Servo angles
+/// Motors
+// value of 1 for motor off as 0 causes unwanted behaviour
+#define MOTOR_OFF 1
+// PWM frequency should be as low as possible without causing significant oscillation of the motor's power output
+#define PMWFREQ 256
+
+// Min and max PWM values
+#define MIN_MOTOR_PWM 24000 // Note this will need to be adjusted for the friction on the wheels and the voltage
+#define MAX_MOTOR_PWM 65000
+
+#define SPEED_RESOLUTION 1000
+
+/// Servo angles
 #define PIVOT_DOWN 120
 #define PIVOT_UP 180
 #define ARM_CLOSED 180

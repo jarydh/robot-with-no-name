@@ -35,4 +35,23 @@ int median(int data[], int data_size)
     return sorted_data[data_size / 2];
 }
 
+/*
+* Clamps n between upper and lower.
+*/
+int clamp(int n, int upper, int lower)
+{
+    if (n < lower)
+    {
+        return lower;
+    }
+    else if (n > upper)
+    {
+        return upper;
+    }
+    else
+    {
+        return n;
+    }
+}
+
 #endif
