@@ -19,14 +19,6 @@ bool Claw::pickUpCan()
     arm_servo_ptr.write(ARM_CLOSED);
     pivot_servo_ptr.write(PIVOT_UP);
 
-    if (CLAW_DEBUG)
-    {
-        display_ptr.clearDisplay();
-        display_ptr.setCursor(0,0);
-        display_ptr.println("Picked up can");
-        display_ptr.display();
-    }
-    
     // TODO use IR sensor to determine if picked up successfully
     return true;
 }
@@ -37,14 +29,6 @@ bool Claw::dropCan()
     delay(1000);
     arm_servo_ptr.write(ARM_OPEN);
 
-    if (CLAW_DEBUG)
-    {
-        display_ptr.clearDisplay();
-        display_ptr.setCursor(0,0);
-        display_ptr.println("Dropped can");
-        display_ptr.display();
-    }
-    
     // TODO use IR sensor to determine if picked up successfully
     return true;
 }

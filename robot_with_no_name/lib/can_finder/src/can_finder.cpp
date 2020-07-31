@@ -96,11 +96,6 @@ bool canFinder::sweep(bool is_clockwise, int range)
 
     while (millis() - start_time < sweep_time)
     {
-        // display_ptr.clearDisplay();
-        // display_ptr.setTextSize(1);
-        // display_ptr.setTextColor(SSD1306_WHITE);
-        // display_ptr.setCursor(0,0);
-
         int sonar_read = readSonar();
         moving_time = 100 - sonar_read / 5;
 
@@ -114,26 +109,18 @@ bool canFinder::sweep(bool is_clockwise, int range)
             // At the can
             if(sonar_read <= stop_range)
             {
-                display_ptr.print("Arrived at can!");
-                display_ptr.display();
                 stop();
                 return true;
             }
             // Getting close to the can
             else if(sonar_read <= reduced_range)
             {
-                display_ptr.print("Close to can! Read range: ");
-                display_ptr.println(sonar_read);
-                display_ptr.display();
                 moving_time = reduced_moving_time;
                 driveStraight(forwards_speed);
                 start_time = millis();
             }
             else
             {
-                display_ptr.print("Found a can! Read range: ");
-                display_ptr.println(sonar_read);
-                display_ptr.display();
                 driveStraight(forwards_speed);
                 start_time = millis();
             }
@@ -154,10 +141,6 @@ bool canFinder::sweep(bool is_clockwise, int range)
         stop();
 
         delay(stopped_time);
-
-        display_ptr.print("Search range: ");
-        display_ptr.println(range);
-        display_ptr.display();
     }
 
     // Did not find can
