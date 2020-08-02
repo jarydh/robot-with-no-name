@@ -25,12 +25,14 @@ const int reduced_moving_time = 20; // slow down when closer to can
 const int reduced_range = 10; // cm
 const int stop_range = 7; // cm
 
+// TODO: fix this (previous sonar readings affect the output)
 int canFinder::readSonar()
 {
     pushNewData(sonar_readings, sonar_ptr.read(), num_sonar_readings);
     return median(sonar_readings, num_sonar_readings);
 }
 
+// TODO: after fixing above, this should be unnecessary
 void canFinder::resetSonar()
 {
     for(int i = 0; i < num_sonar_readings; i++)
@@ -146,3 +148,13 @@ bool canFinder::sweep(bool is_clockwise, int range)
     // Did not find can
     return false;
 }
+
+/*
+    can-finding algorithm:
+        turn in place until a can is 'detected' by sonar
+            if not detected, cry I guess
+        move towards can while adjusting course
+            use PID (probably actually PD) or something else for this step
+        once close to can, move slowly and line up to claw
+        stop
+*/
