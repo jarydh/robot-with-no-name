@@ -15,7 +15,7 @@
 Ultrasonic sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_TIMEOUT);
 
 // Can finder object
-canFinder can_finder(sonar);
+CanFinder can_finder(sonar);
 
 // Claw
 Servo arm_servo;
