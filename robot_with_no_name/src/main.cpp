@@ -7,6 +7,7 @@
 #include "pinout.h"
 #include "beacon_finder.h"
 #include "can_finder.h"
+#include "sonar.h"
 #include "claw.h"
 #include "pwm_servo.h"
 
@@ -27,6 +28,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Ultrasonic sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_TIMEOUT);
 unsigned int sonar_distance;
 
+// Sonar wrapper object for PID
+sonarWrapper sonar_wrapper(sonar, display);
+
 // Can finder object
 canFinder can_finder(sonar, display);
 
@@ -34,7 +38,6 @@ canFinder can_finder(sonar, display);
 pwmServo arm_servo(CLAW_ARMS_SERVO_PIN);
 pwmServo pivot_servo(CLAW_PIVOT_SERVO_PIN);
 Claw claw(arm_servo, pivot_servo, display);
-
 
 int sonar_range = 100;  // cm
 int sonar_read;
@@ -77,7 +80,7 @@ void setup() {
   }
   display.clearDisplay();
   pointAtBeacon(20, display);
-  pidToBeacon(display, can_finder);
+  pidToBeacon(display, sonar_wrapper);
 }
 
 
@@ -112,7 +115,7 @@ void loop()
   //   // Trying to allign with the beacon
   // }
 
-  // pidToBeacon(display, can_finder);
+  // pidToBeacon(display, sonar_wrapper);
 
 
   // delay(50);

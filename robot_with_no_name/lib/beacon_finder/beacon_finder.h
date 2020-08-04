@@ -7,7 +7,7 @@
 
 //Internal Libraries
 #include "pinout.h"
-#include "can_finder.h"
+#include "sonar.h"
 
 /*
 * Points the robot to the beacon with uniform rotation speed, angular_speed.
@@ -20,7 +20,7 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display);
 * Does PID control to allign the robot with the beacon
 * Returns false if PID fails
 */
-bool pidToBeacon(Adafruit_SSD1306 display, canFinder can_finder);
+bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar);
 
 void setPIDMotors(int speed);
 

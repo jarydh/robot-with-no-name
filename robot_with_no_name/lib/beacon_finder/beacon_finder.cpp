@@ -91,7 +91,7 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display){
     return true;
 }
 
-bool pidToBeacon(Adafruit_SSD1306 display, canFinder can_finder)
+bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
 {
     int reading_r = analogRead(IR_RIGHT);
     int reading_l = analogRead(IR_LEFT);
@@ -104,8 +104,8 @@ bool pidToBeacon(Adafruit_SSD1306 display, canFinder can_finder)
         display.display();
     }
 
-    can_finder.setSonarRange(SONAR_FOUND_BIN + 5);
-    can_finder.resetSonar();
+    sonar.setSonarRange(SONAR_FOUND_BIN + 5);
+    sonar.resetSonar();
     
     //begin PID control
     int p = 0;
@@ -173,7 +173,7 @@ bool pidToBeacon(Adafruit_SSD1306 display, canFinder can_finder)
         if (ping_sonar_count >= PING_SONAR_LOOPS)
         {
             stop();
-            sonar_read = can_finder.readSonar();
+            sonar_read = sonar.readSonar();
             display.clearDisplay();
             display.setCursor(0,0);
             display.println("Sonar Read:");
