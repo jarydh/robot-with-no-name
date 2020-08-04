@@ -38,6 +38,7 @@ Claw claw(arm_servo, pivot_servo, display);
 
 int sonar_range = 100;  // cm
 int sonar_read;
+int count = 0;
 
 void setup() {
   // Start button 
@@ -75,28 +76,51 @@ void setup() {
     display.display();
   }
   display.clearDisplay();
+  pointAtBeacon(20, display);
+  pidToBeacon(display, can_finder);
 }
 
 
 void loop() 
 {
-  do
-  {
-    can_finder.findCan();
-    claw.pickUpCan();
-    delay(1500);
-  } while (!can_finder.checkCan());
+  // // SONAR DEBUGGING
+  // sonar_read = can_finder.readSonar();
+  // display.clearDisplay();
+  // display.setCursor(0,0);
+  // display.println("Sonar Read:");
+  // display.println(sonar_read);
+  // display.println("Count:");
+  // display.println(count);
+  // display.display();
+  // if(sonar_read < 10)
+  // {
+  //   count++;
+  // }
 
-  pointAtBeacon(20, display);
-  pidToBeacon(display, can_finder);
+  // delay(50);
+
+  // ACTUAL CODE
+  // do
+  // {
+  //   can_finder.findCan();
+  //   claw.pickUpCan();
+  //   delay(1500);
+  // } while (!can_finder.checkCan());
+
+  // while(pointAtBeacon(20, display))
+  // {
+  //   // Trying to allign with the beacon
+  // }
+
+  // pidToBeacon(display, can_finder);
 
 
-  delay(50);
+  // delay(50);
 
-  claw.dropCan();
+  // claw.dropCan();
 
-  driveStraight(-100);
-  delay(500);
-  turn(100);
-  delay(500);
+  // driveStraight(-100);
+  // delay(500);
+  // turn(100);
+  // delay(500);
 };

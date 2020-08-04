@@ -22,10 +22,9 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display);
 */
 bool pidToBeacon(Adafruit_SSD1306 display, canFinder can_finder);
 
-/*
-* Moves the robot to the beacon at a given speed, rotating at a given angular speed,
-* stopping at a distance determined by STOPPING_STRENGTH
-*/
-bool goToBeacon(int speed, int angular_speed, Adafruit_SSD1306 display);
-
 void setPIDMotors(int speed);
+
+/*
+* Used for debugging IR, just prints readings to the display
+*/
+void IRDebug(Adafruit_SSD1306 display);
