@@ -1,6 +1,7 @@
 // External libraries
 #include <Wire.h>
 #include <Ultrasonic.h>
+#include <Adafruit_SSD1306.h>
 
 // Internal libraries
 #include "motors.h"
@@ -10,6 +11,13 @@
 #include "sonar.h"
 #include "claw.h"
 #include "pwm_servo.h"
+
+// Display
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET -1    // This display does not have a reset pin accessible
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Sonar sensor
 #define SONAR_TIMEOUT 10000UL // Time in micro seconds before sonar times out, determines range and how long the ping will block for

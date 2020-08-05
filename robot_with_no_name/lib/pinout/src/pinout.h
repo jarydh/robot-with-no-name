@@ -38,6 +38,8 @@
 #define CLAW_ARMS_SERVO_PIN PA_3
 #define CLAW_PIVOT_SERVO_PIN PA_2
 
+#define START_BUTTON PA6
+
 // config for robot
 
 /// Motors

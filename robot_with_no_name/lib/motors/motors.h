@@ -110,14 +110,4 @@ void hard_stop()
     stop();
 }
 
-/*
-* Drives a single motor at a given speed (0 to 1000)
-*/
-void driveMotor(PinName motor, int speed);
-
-/*
-* Drives a single motor at a given speed (-1000 to 1000)
-*/
-void setMotorSpeed(motorSides side, int speed);
-
 #endif

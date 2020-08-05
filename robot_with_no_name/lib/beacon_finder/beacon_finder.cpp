@@ -156,7 +156,7 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
         // Make sure derivative error list is fully initiallized
         if (num_loops >= SAMPLING_SIZE)
         {
-            setPIDMotors(speed);
+            drive(DEFAULT_PID_SPEED, speed);
         }
 
         if (ping_sonar_count >= PING_SONAR_LOOPS)
@@ -204,23 +204,6 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
 
     // TODO figure out if PID ever will fail
     return true;
-}
-
-/*
-* Sets motors for PID given error
-*/
-void setPIDMotors(int speed)
-{
-    if (speed > 0)
-    {
-        setMotorSpeed(motorSides::LEFT, DEFAULT_PID_SPEED + speed);
-        setMotorSpeed(motorSides::RIGHT, DEFAULT_PID_SPEED - speed);
-    }
-    else if (speed < 0)
-    {
-        setMotorSpeed(motorSides::RIGHT, DEFAULT_PID_SPEED + speed * -1);
-        setMotorSpeed(motorSides::LEFT, DEFAULT_PID_SPEED - speed * -1);
-    }
 }
 
 void IRDebug(Adafruit_SSD1306 display)
