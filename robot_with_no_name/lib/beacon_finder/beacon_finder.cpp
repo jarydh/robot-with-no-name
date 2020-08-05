@@ -182,7 +182,7 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
         num_loops++;
     }
 
-    stop();
+    hard_stop();
 
     if (IR_DEBUG)
     {

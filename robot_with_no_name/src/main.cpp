@@ -61,4 +61,8 @@ void setup()
   claw.dropCan();
 }
 
-void loop(){};
+void loop()
+{
+  pointAtBeacon(20, display);
+  pidToBeacon(display, sonar_wrapper);
+};

@@ -1,6 +1,9 @@
 // Used for moving to an IR beacon
 // Authors: Thomas, Jaryd
 
+#ifndef BEACON_FINDER_H
+#define BEACON_FINDER_H
+
 // External Libraries
 #include <Wire.h>
 // #include <Adafruit_SSD1306.h>
@@ -28,3 +31,5 @@ void setPIDMotors(int speed);
 * Used for debugging IR, just prints readings to the display
 */
 void IRDebug(Adafruit_SSD1306 display);
+
+#endif
