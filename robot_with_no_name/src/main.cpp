@@ -7,12 +7,16 @@
 #include "pinout.h"
 #include "beacon_finder.h"
 #include "can_finder.h"
+#include "sonar.h"
 #include "claw.h"
 #include "pwm_servo.h"
 
 // Sonar sensor
 #define SONAR_TIMEOUT 10000UL // Time in micro seconds before sonar times out, determines range and how long the ping will block for
 Ultrasonic sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_TIMEOUT);
+
+// Sonar wrapper object for PID
+sonarWrapper sonar_wrapper(sonar, display);
 
 // Can finder object
 CanFinder can_finder(sonar);

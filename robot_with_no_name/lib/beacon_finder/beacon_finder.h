@@ -7,16 +7,24 @@
 
 //Internal Libraries
 #include "pinout.h"
+#include "sonar.h"
 
 /*
 * Points the robot to the beacon with uniform rotation speed, angular_speed.
 * In ideal conditionss, the robot can be driven straight ahead after running this command.
 * Returns false if the robot fails to pick up a signal
 */
-bool pointAtBeacon(int angular_speed);
+bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display);
 
 /*
-* Moves the robot to the beacon at a given speed, rotating at a given angular speed,
-* stopping at a distance determined by STOPPING_STRENGTH
+* Does PID control to allign the robot with the beacon
+* Returns false if PID fails
 */
-bool goToBeacon(int speed, int angular_speed);
+bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar);
+
+void setPIDMotors(int speed);
+
+/*
+* Used for debugging IR, just prints readings to the display
+*/
+void IRDebug(Adafruit_SSD1306 display);
