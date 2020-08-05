@@ -18,8 +18,8 @@ Ultrasonic sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_TIMEOUT);
 CanFinder can_finder(sonar);
 
 // Claw
-Servo arm_servo;
-Servo pivot_servo;
+pwmServo arm_servo(CLAW_ARMS_SERVO_PIN);
+pwmServo pivot_servo(CLAW_PIVOT_SERVO_PIN);
 Claw claw(arm_servo, pivot_servo);
 
 void setup()
@@ -38,51 +38,14 @@ void setup()
   pinMode(CLAW_PIVOT_SERVO_PIN_INT, OUTPUT);
   pinMode(CLAW_ARMS_SERVO_PIN_INT, OUTPUT);
 
-<<<<<<< HEAD
-  == == == =
-               display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  display.display();
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
+  claw.dropCan();
+  delay(1000);
+  can_finder.find_can();
 
-  arm_servo.write(ARM_OPEN);
-  pivot_servo.write(PIVOT_UP);
-
-  while (digitalRead(START_BUTTON) == HIGH)
-  {
-    display.clearDisplay();
-    display.setCursor(0, 0);
-    display.println("Press button to start...");
-    display.display();
-  }
->>>>>>> 0d19054... added pwm servo library
-  // can_finder.findCan();
-  // pointAtBeacon(20);
-  // goToBeacon(20, 20);
+  delay(1000);
+  claw.pickUpCan();
+  delay(5000);
+  claw.dropCan();
 }
 
-void loop(){
-    // 2 primary loops: finding can, and finding bin
-};
-
-// can-finding loop
-void find_can()
-{
-<<<<<<< HEAD
-}
-
-// finding bin loop
-void find_bin(){} == == == =
-
-                               can_finder.findCan();
-
-claw.pickUpCan();
-delay(3000);
-
-claw.dropCan();
-delay(10000);
-}
-;
->>>>>>> 0d19054... added pwm servo library
+void loop(){};

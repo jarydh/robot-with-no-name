@@ -12,14 +12,14 @@
 #define PINOUT_H
 
 // motors
-#define LEFT_MOTOR_FORWARD_PIN PB_6
-#define LEFT_MOTOR_BACKWARD_PIN PB_7
+#define LEFT_MOTOR_FORWARD_PIN PB_0
+#define LEFT_MOTOR_BACKWARD_PIN PB_1
 #define RIGHT_MOTOR_FORWARD_PIN PB_8
 #define RIGHT_MOTOR_BACKWARD_PIN PB_9
 
 // need integer types for Arduino-based libraries
-#define LEFT_MOTOR_FORWARD_PIN_INT PB6
-#define LEFT_MOTOR_BACKWARD_PIN_INT PB7
+#define LEFT_MOTOR_FORWARD_PIN_INT PB0
+#define LEFT_MOTOR_BACKWARD_PIN_INT PB1
 #define RIGHT_MOTOR_FORWARD_PIN_INT PB8
 #define RIGHT_MOTOR_BACKWARD_PIN_INT PB9
 
@@ -32,11 +32,11 @@
 #define SONAR_TRIGGER_PIN PA1
 
 // Servo pins
-#define CLAW_ARMS_SERVO_PIN_INT PB1
-#define CLAW_PIVOT_SERVO_PIN_INT PB0
+#define CLAW_ARMS_SERVO_PIN_INT PA3
+#define CLAW_PIVOT_SERVO_PIN_INT PA2
 
-#define CLAW_ARMS_SERVO_PIN PB_1
-#define CLAW_PIVOT_SERVO_PIN PB_0
+#define CLAW_ARMS_SERVO_PIN PA_3
+#define CLAW_PIVOT_SERVO_PIN PA_2
 
 // config for robot
 
@@ -46,16 +46,20 @@
 // PWM frequency should be as low as possible without causing significant oscillation of the motor's power output
 #define PMWFREQ 256
 
+// positive values make it turn more right, negative more left. Adjust until movement is straight.
+// note that large values may cause odd behaviour at very low speeds.
+#define MOTOR_OFFSET 0
+
 // Min and max PWM values
-#define MIN_MOTOR_PWM 24000 // Note this will need to be adjusted for the friction on the wheels and the voltage
+#define MIN_MOTOR_PWM 11000 // Note this will need to be adjusted for the friction on the wheels and the voltage
 #define MAX_MOTOR_PWM 65000
 
 #define SPEED_RESOLUTION 1000
 
 /// Servo angles
-#define PIVOT_DOWN 120
-#define PIVOT_UP 180
-#define ARM_CLOSED 180
-#define ARM_OPEN 160
+#define PIVOT_DOWN 173
+#define PIVOT_UP 90
+#define ARM_CLOSED 90
+#define ARM_OPEN 140
 
 #endif

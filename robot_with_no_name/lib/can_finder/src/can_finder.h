@@ -24,13 +24,7 @@
 
 // Driving towards can
 #define CAN_FINDING_SPEED 40
-#define CAN_ALIGNMENT_SPEED 20     // slow down when closer to can
-#define CAN_ALIGNMENT_RANGE 10     // cm
-#define CAN_ALIGNMENT_STOP_RANGE 7 // cm
-
-#define MIN_CAN_DETECTION_DIFFERENCE 20 //cm
-
-#define INITIAL_REALIGNMENT_SPEED 20
+#define CAN_ALIGNMENT_STOP_RANGE 14 // cm
 
 class CanFinder
 {
@@ -52,59 +46,53 @@ public:
     {
         // make an assumption that we are not pointing at a can
         // TODO: add a minimum range here where the first measurement IS assumed to be a can
-        int last_sonar;
-        int cur_sonar = read_sonar();
-
-        // start to turn
-        drive(0, SWEEP_SPEED);
+        int cur_sonar;
+        int threshold = 75;
 
         // read sonar until a large dip in sonar range is detected
         // TODO: possibly add a timeout to this loop
-        do
+        while ((cur_sonar = read_sonar()) > CAN_ALIGNMENT_STOP_RANGE)
         {
-            last_sonar = cur_sonar;
-            int cur_sonar = read_sonar();
-        } while (last_sonar - cur_sonar < MIN_CAN_DETECTION_DIFFERENCE);
-        // TODO: need an abort on tape detection and an abort on beacon recognition
-        int can_distance = cur_sonar;
-
-        // stop briefly to lose momentum
-        stop();
-        delay(250);
-
-        drive(CAN_FINDING_SPEED, 0);
-
-        do
-        {
-            cur_sonar = read_sonar();
-            if (cur_sonar < can_distance)
+            if (cur_sonar > threshold)
             {
-                can_distance = cur_sonar;
-            }
-            else
-            {
-                // TODO: forwards speed may need tweaking
-                realign_to_can(can_distance, CAN_FINDING_SPEED);
-            }
-        } while (can_distance > CAN_ALIGNMENT_RANGE);
+                stop();
+                delay(100);
+                while (cur_sonar > threshold)
+                {
+                    // TODO: optimize this or something
+                    // start to turn
+                    drive(0, SWEEP_SPEED);
+                    delay(100);
+                    stop();
+                    delay(100);
+                    cur_sonar = read_sonar();
+                };
 
-        drive(CAN_ALIGNMENT_SPEED, 0);
+                // turn juuust a lil bit extra
+                drive(0, SWEEP_SPEED);
+                delay(200);
+                stop();
+                delay(100);
+            }
 
-        do
-        {
-            cur_sonar = read_sonar();
-            if (cur_sonar < can_distance)
-            {
-                can_distance = cur_sonar;
-            }
-            else
-            {
-                // TODO: forwards speed may need tweaking
-                realign_to_can(can_distance, CAN_ALIGNMENT_SPEED);
-            }
-        } while (can_distance > CAN_ALIGNMENT_STOP_RANGE);
+            // GAS, GAS, GAS
+            drive(CAN_FINDING_SPEED, 0);
+
+            // TODO: need an abort on tape detection and an abort on beacon recognition
+            // TODO: adjust this
+            // if (threshold > 30)
+            // {
+            //     delay(threshold * 300 / CAN_FINDING_SPEED);
+            // }
+            // else
+            // {
+            //     delay(100);
+            // }
+            threshold = cur_sonar + 5;
+        };
 
         stop();
+        return true;
     };
 
 private:
@@ -114,12 +102,20 @@ private:
     int read_sonar()
     {
         // TODO: decide on if multiple sonar measurements makes sense
-        for (int i = 0; i < NUM_SONAR_READINGS; i++)
+        // for (int i = 0; i < NUM_SONAR_READINGS; i++)
+        // {
+        //     sonar_readings[i] = sonar.read();
+        // }
+
+        // TODO: filter for readings that echo off of the claw
+        // return median(sonar_readings, NUM_SONAR_READINGS);
+        int out = sonar.read();
+        while (out < 5 && out > 150)
         {
-            sonar_readings[i] = sonar.read();
+            out = sonar.read();
         }
 
-        return median(sonar_readings, NUM_SONAR_READINGS);
+        return out;
     }
 
     /*
@@ -127,16 +123,14 @@ private:
 
         Algorithm:
             oscillate back and forth with increasing speed until the can is found.
+            mostly just cry
     */
     void realign_to_can(int can_distance, int forwards_speed)
     {
-        int turn_speed = INITIAL_REALIGNMENT_SPEED;
+        int turn_speed = 20;
 
-        do
+        while (read_sonar() > can_distance)
         {
-            drive(forwards_speed, turn_speed);
-            // TODO: tune this delay (should this be a constant?)
-            delay(250);
             // TODO: same as above but for the additive term
             if (turn_speed > 0)
             {
@@ -144,16 +138,16 @@ private:
             }
             else
             {
-                turn_speed = -(turn_speed - 5);
+                turn_speed = -turn_speed;
             }
-        } while (read_sonar() > can_distance);
-
-        // stop briefly to lose momentum
-        stop();
-        delay(250);
+            drive(forwards_speed, turn_speed);
+            // TODO: tune this delay (should this be a constant?)
+            delay(200);
+            stop();
+            delay(200);
+        };
     };
 
-    int sonar_readings[NUM_SONAR_READINGS];
     Ultrasonic &sonar;
 };
 

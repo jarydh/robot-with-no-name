@@ -5,14 +5,14 @@
 #define CLAW_H
 
 #include <Arduino.h>
-#include <Servo.h>
+#include "pwm_servo.h"
 
 #include "pinout.h"
 
 class Claw
 {
 public:
-    Claw(Servo &arm_servo, Servo &pivot_servo)
+    Claw(pwmServo &arm_servo, pwmServo &pivot_servo)
         : arm_servo_ptr(arm_servo), pivot_servo_ptr(pivot_servo) {}
     bool pickUpCan()
     {
@@ -20,6 +20,7 @@ public:
         pivot_servo_ptr.write(PIVOT_DOWN);
         delay(1000);
         arm_servo_ptr.write(ARM_CLOSED);
+        delay(1000);
         pivot_servo_ptr.write(PIVOT_UP);
 
         // TODO use IR sensor to determine if picked up successfully
@@ -37,8 +38,8 @@ public:
     };
 
 private:
-    Servo &arm_servo_ptr;
-    Servo &pivot_servo_ptr;
+    pwmServo &arm_servo_ptr;
+    pwmServo &pivot_servo_ptr;
 };
 
 #endif

@@ -23,6 +23,20 @@ int motor_linearize_slope = (MAX_MOTOR_PWM - MIN_MOTOR_PWM) / SPEED_RESOLUTION;
 */
 void drive(int speed, int angular_speed)
 {
+    // we store the last-used speeds so that we don't constantly restart PWM
+    static int last_speed = 0;
+    static int last_angular_speed = 0;
+    if (speed == last_speed && angular_speed == last_angular_speed)
+    {
+        // don't do anything
+        return;
+    }
+    else
+    {
+        last_speed = speed;
+        last_angular_speed = angular_speed;
+    }
+
     int speed_left = clamp(speed + angular_speed, SPEED_RESOLUTION, -SPEED_RESOLUTION);
     int speed_right = clamp(speed - angular_speed, SPEED_RESOLUTION, -SPEED_RESOLUTION);
 
@@ -42,7 +56,7 @@ void drive(int speed, int angular_speed)
 
     if (speed_right < 0)
     {
-        speed_right_b = motor_linearize_slope * speed_right + MIN_MOTOR_PWM;
+        speed_right_b = motor_linearize_slope * -speed_right + MIN_MOTOR_PWM;
     }
     else if (speed_right > 0)
     {
