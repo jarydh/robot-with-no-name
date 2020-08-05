@@ -36,6 +36,14 @@ Claw claw(arm_servo, pivot_servo);
 
 void setup()
 {
+  // Display
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.display();
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+
   // IR Pins
   pinMode(IR_LEFT, INPUT);
   pinMode(IR_RIGHT, INPUT);
@@ -50,19 +58,32 @@ void setup()
   pinMode(CLAW_PIVOT_SERVO_PIN_INT, OUTPUT);
   pinMode(CLAW_ARMS_SERVO_PIN_INT, OUTPUT);
 
-  claw.dropCan();
-  delay(1000);
-  pivot_servo.write(CLAW_LEVEL_ANGLE);
-  can_finder.find_can();
+  pinMode(START_BUTTON, INPUT_PULLUP);
 
-  delay(1000);
+  arm_servo.write(ARM_OPEN);
+  pivot_servo.write(PIVOT_UP);
+
+  while(digitalRead(START_BUTTON) == HIGH)
+  {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.println("Press button to start...");
+    display.display();
+  }
+  display.clearDisplay();
+
+  can_finder.find_can();
+  delay(100);
+  drive(100, 0);
+  delay(50);
+  hard_stop();
   claw.pickUpCan();
-  delay(5000);
-  claw.dropCan();
+
+  // while(pointAtBeacon(20, display)){}
+
+  // pidToBeacon(display, sonar_wrapper);
+  // claw.dropCan();
 }
 
 void loop()
-{
-  pointAtBeacon(20, display);
-  pidToBeacon(display, sonar_wrapper);
-};
+{};

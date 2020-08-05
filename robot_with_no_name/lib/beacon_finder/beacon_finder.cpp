@@ -42,9 +42,9 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
     {
         // start turning towards beacon
         if (reading_r > reading_l)
-            turn(angular_speed);
+            drive(0, angular_speed);
         else
-            turn(-angular_speed);
+            drive(0, -angular_speed);
     }
 
     //rotate until  a signal is picked up, or until timing out
@@ -66,7 +66,7 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
             }
 
             // Drive in a random direction for a bit
-            driveStraight(100);
+            drive(100, 0);
             delay(400);
             stop();
             return false;
