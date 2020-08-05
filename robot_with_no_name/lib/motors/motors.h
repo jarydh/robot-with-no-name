@@ -10,8 +10,15 @@
 
 #include "sensor_math.h"
 
+#define HARD_STOP_IMPULSE_DIVISOR 10
+
 // TODO: this should be made either logarithmic or piecewise to better fit motor power vs torque
 int motor_linearize_slope = (MAX_MOTOR_PWM - MIN_MOTOR_PWM) / SPEED_RESOLUTION;
+
+int last_speed = 0;
+int last_angular_speed = 0;
+
+int last_drive_time = millis();
 
 /*
 * Sets motor speed based on both speed and angular_speed, where speed increases power to both motors in the same direction,
@@ -24,8 +31,6 @@ int motor_linearize_slope = (MAX_MOTOR_PWM - MIN_MOTOR_PWM) / SPEED_RESOLUTION;
 void drive(int speed, int angular_speed)
 {
     // we store the last-used speeds so that we don't constantly restart PWM
-    static int last_speed = 0;
-    static int last_angular_speed = 0;
     if (speed == last_speed && angular_speed == last_angular_speed)
     {
         // don't do anything
@@ -35,6 +40,7 @@ void drive(int speed, int angular_speed)
     {
         last_speed = speed;
         last_angular_speed = angular_speed;
+        last_drive_time = millis();
     }
 
     int speed_left = clamp(speed + angular_speed, SPEED_RESOLUTION, -SPEED_RESOLUTION);
@@ -47,11 +53,11 @@ void drive(int speed, int angular_speed)
 
     if (speed_left < 0)
     {
-        speed_left_b = motor_linearize_slope * -speed_left + MIN_MOTOR_PWM;
+        speed_left_b = motor_linearize_slope * -speed_left + MOTOR_OFFSET + MIN_MOTOR_PWM;
     }
     else if (speed_left > 0)
     {
-        speed_left_f = motor_linearize_slope * speed_left + MIN_MOTOR_PWM;
+        speed_left_f = motor_linearize_slope * speed_left + MOTOR_OFFSET + MIN_MOTOR_PWM;
     }
 
     if (speed_right < 0)
@@ -87,5 +93,21 @@ void stop()
 {
     drive(0, angular_speed);
 };
+
+/*
+* Delivers a quick impulse in the opposite direction to quickly stop the robot
+* speed and angular_speed should be the last speed commands issued.
+*/
+void hard_stop()
+{
+    int drive_time = millis() - last_drive_time;
+    if (drive_time > 100)
+    {
+        drive(-last_speed, -last_angular_speed);
+        delay(drive_time / HARD_STOP_IMPULSE_DIVISOR);
+    }
+
+    stop();
+}
 
 #endif

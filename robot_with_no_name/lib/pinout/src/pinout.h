@@ -48,7 +48,7 @@
 
 // positive values make it turn more right, negative more left. Adjust until movement is straight.
 // note that large values may cause odd behaviour at very low speeds.
-#define MOTOR_OFFSET 0
+#define MOTOR_OFFSET 250
 
 // Min and max PWM values
 #define MIN_MOTOR_PWM 11000 // Note this will need to be adjusted for the friction on the wheels and the voltage
@@ -57,9 +57,28 @@
 #define SPEED_RESOLUTION 1000
 
 /// Servo angles
-#define PIVOT_DOWN 173
+// #define PIVOT_DOWN 173
+#define PIVOT_DOWN 150
 #define PIVOT_UP 90
 #define ARM_CLOSED 90
 #define ARM_OPEN 140
+#define CLAW_LEVEL_ANGLE 140
+
+/// Can Finding
+#define SWEEP_SPEED 80
+
+#define CAN_FINDING_SPEED 160
+#define CAN_FAR_DELAY 500
+#define CAN_STOP_RANGE 12 // cm
+
+// the threshold where a reading from  the sonar sensor is considered a can
+#define CAN_THRESHOLD 150 //cm
+
+// max sure that the timeout for the sonar allows for values at least this big
+#define SONAR_MAX_RANGE 170 // cm
+// set this based on robot geometry. 5 should be good enough.
+#define SONAR_MIN_RANGE 8 // cm
+
+#define FINAL_CAN_TURN_IN_DELAY 50
 
 #endif

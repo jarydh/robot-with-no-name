@@ -40,6 +40,7 @@ void setup()
 
   claw.dropCan();
   delay(1000);
+  pivot_servo.write(CLAW_LEVEL_ANGLE);
   can_finder.find_can();
 
   delay(1000);
