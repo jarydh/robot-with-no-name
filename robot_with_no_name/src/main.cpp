@@ -50,19 +50,17 @@ void setup()
   pinMode(CLAW_PIVOT_SERVO_PIN_INT, OUTPUT);
   pinMode(CLAW_ARMS_SERVO_PIN_INT, OUTPUT);
 
-  claw.dropCan();
-  delay(1000);
-  pivot_servo.write(CLAW_LEVEL_ANGLE);
-  can_finder.find_can();
+  // claw.dropCan();
+  // delay(1000);
+  // pivot_servo.write(CLAW_LEVEL_ANGLE);
+  // can_finder.find_can();
 
   delay(1000);
   claw.pickUpCan();
-  delay(5000);
-  claw.dropCan();
-}
-
-void loop()
-{
-  pointAtBeacon(20, display);
+  // delay(5000);
+  pointAtBeacon(40, display);
   pidToBeacon(display, sonar_wrapper);
+  claw.dropCan();
 };
+
+void loop(){};
