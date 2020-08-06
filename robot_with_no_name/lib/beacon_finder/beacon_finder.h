@@ -32,4 +32,9 @@ void setPIDMotors(int speed);
 */
 void IRDebug(Adafruit_SSD1306 display);
 
+/*
+* Backs away from beacon
+*/
+void backAway();
+
 #endif

@@ -25,9 +25,28 @@
 #define P_GAIN 3
 #define D_GAIN 100
 
+#define PID_TIMEOUT_MS 15000  // PID timeout
+
 #define SAMPLING_SIZE 5 //the number of samples used to determine the derivative_error_sum
 
-#define DEFAULT_PID_SPEED 100
+#define DEFAULT_PID_SPEED 80
+
+// Back away from beacon
+#define BACK_AWAY_STRAIGHT_SPEED -150
+#define BACK_AWAY_ANGULAR_SPEED 200
+#define BACK_AWAY_STRAIGHT_TIME_MS 250
+#define BACK_AWAY_ANGULAR_TIME_MS 400
+
+
+void backAway()
+{
+    drive(BACK_AWAY_STRAIGHT_SPEED, 0);
+    delay(BACK_AWAY_STRAIGHT_TIME_MS);
+    drive(0, BACK_AWAY_ANGULAR_SPEED);
+    delay(BACK_AWAY_ANGULAR_TIME_MS);
+    hard_stop();
+}
+
 
 bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
 {
@@ -80,6 +99,7 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
 
 bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
 {
+    uint32_t pid_start_time = millis();
     int reading_r = analogRead(IR_RIGHT);
     int reading_l = analogRead(IR_LEFT);
 
@@ -91,8 +111,8 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
         display.display();
     }
 
-    sonar.setSonarRange(SONAR_FOUND_BIN + 5);
-    sonar.resetSonar();
+    // sonar.setSonarRange(SONAR_FOUND_BIN + 5);
+    // sonar.resetSonar();
 
     //begin PID control
     int p = 0;
@@ -109,7 +129,6 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
     int num_loops = 0;
     int ping_sonar_count = 1;
 
-    // while(abs(error) > STOPPING_ERROR || strength < STOPPING_STRENGTH)
     while (true)
     {
         reading_r = analogRead(IR_RIGHT);
@@ -135,6 +154,7 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
 
         speed = (int)(p + d) * GAIN;
 
+        // For debugging
         while (digitalRead(START_BUTTON) == LOW)
         {
             stop();
@@ -159,25 +179,31 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
             drive(DEFAULT_PID_SPEED, speed);
         }
 
-        if (ping_sonar_count >= PING_SONAR_LOOPS)
+        // Check
+        if(digitalRead(RIGHT_SWITCH) == LOW || digitalRead(LEFT_SWITCH) == LOW || millis() - pid_start_time > PID_TIMEOUT_MS)
         {
-            stop();
-            sonar_read = sonar.readSonar();
-            display.clearDisplay();
-            display.setCursor(0, 0);
-            display.println("Sonar Read:");
-            display.println(sonar_read);
-            display.display();
-            if (sonar_read <= SONAR_FOUND_BIN && abs(error) < STOPPING_ERROR)
-            {
-                break;
-            }
-            ping_sonar_count = 1;
+            break;
         }
-        else
-        {
-            ping_sonar_count++;
-        }
+
+        // if (ping_sonar_count >= PING_SONAR_LOOPS)
+        // {
+        //     stop();
+        //     sonar_read = sonar.readSonar();
+        //     display.clearDisplay();
+        //     display.setCursor(0, 0);
+        //     display.println("Sonar Read:");
+        //     display.println(sonar_read);
+        //     display.display();
+        //     if (sonar_read <= SONAR_FOUND_BIN && abs(error) < STOPPING_ERROR)
+        //     {
+        //         break;
+        //     }
+        //     ping_sonar_count = 1;
+        // }
+        // else
+        // {
+        //     ping_sonar_count++;
+        // }
 
         num_loops++;
     }

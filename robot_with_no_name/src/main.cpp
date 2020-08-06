@@ -27,12 +27,14 @@ Ultrasonic sonar(SONAR_TRIGGER_PIN, SONAR_ECHO_PIN, SONAR_TIMEOUT);
 sonarWrapper sonar_wrapper(sonar, display);
 
 // Can finder object
-CanFinder can_finder(sonar);
+CanFinder can_finder(sonar, display);
 
 // Claw
 pwmServo arm_servo(CLAW_ARMS_SERVO_PIN);
 pwmServo pivot_servo(CLAW_PIVOT_SERVO_PIN);
 Claw claw(arm_servo, pivot_servo);
+
+bool found_can;
 
 void setup()
 {
@@ -58,6 +60,8 @@ void setup()
   pinMode(CLAW_PIVOT_SERVO_PIN_INT, OUTPUT);
   pinMode(CLAW_ARMS_SERVO_PIN_INT, OUTPUT);
 
+  pinMode(LEFT_SWITCH, INPUT_PULLUP);
+  pinMode(RIGHT_SWITCH, INPUT_PULLUP);
   pinMode(START_BUTTON, INPUT_PULLUP);
 
   arm_servo.write(ARM_OPEN);
@@ -71,19 +75,29 @@ void setup()
     display.display();
   }
   display.clearDisplay();
-
-  can_finder.find_can();
-  delay(100);
-  drive(100, 0);
-  delay(50);
-  hard_stop();
-  claw.pickUpCan();
-
-  // while(pointAtBeacon(20, display)){}
-
-  // pidToBeacon(display, sonar_wrapper);
-  // claw.dropCan();
-}
+  }
 
 void loop()
-{};
+{
+  do
+  {
+    claw.dropCan();
+    found_can = can_finder.find_can();
+    if(found_can)
+    {
+      claw.pickUpCan();
+      delay(150);
+    }
+  } while(!can_finder.check_can());
+
+  while(!pointAtBeacon(20, display)){}
+
+  pidToBeacon(display, sonar_wrapper);
+
+  if(found_can)
+  {
+    claw.dropCan(); 
+  }
+
+  backAway();
+};

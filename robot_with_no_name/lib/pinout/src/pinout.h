@@ -38,6 +38,9 @@
 #define CLAW_ARMS_SERVO_PIN PB_1
 #define CLAW_PIVOT_SERVO_PIN PB_0
 
+#define LEFT_SWITCH PB4
+#define RIGHT_SWITCH PB3
+
 #define START_BUTTON PB12
 
 // config for robot
@@ -60,16 +63,17 @@
 
 /// Servo angles
 #define PIVOT_DOWN 135
+#define PIVOT_MID 150
 #define PIVOT_UP 180
-#define ARM_CLOSED 165
-#define ARM_OPEN 120
+#define ARM_CLOSED 170
+#define ARM_OPEN 115
 #define CLAW_LEVEL_ANGLE 180
 
 /// Can Finding
 #define SWEEP_SPEED 80
 
-#define CAN_FINDING_SPEED 100
-#define CAN_FAR_DELAY 250
+#define CAN_FINDING_SPEED 50
+#define CAN_FAR_DELAY 50
 #define CAN_STOP_RANGE 15 // cm
 
 // the threshold where a reading from  the sonar sensor is considered a can
@@ -80,6 +84,7 @@
 // set this based on robot geometry. 5 should be good enough.
 #define SONAR_MIN_RANGE 8 // cm
 
-#define FINAL_CAN_TURN_IN_DELAY 100
+#define FINAL_CAN_TURN_IN_DELAY 75
+#define FINAL_CAN_STRAIGHT_IN_DELAY 165
 
 #endif
