@@ -32,4 +32,7 @@ void setPIDMotors(int speed);
 */
 void IRDebug(Adafruit_SSD1306 display);
 
+// just guess what this does
+int read_ir(int pin);
+
 #endif

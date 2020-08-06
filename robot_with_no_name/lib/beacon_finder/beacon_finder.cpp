@@ -11,10 +11,10 @@
 #define IR_DEBUG 0
 
 // IR values
-#define STOPPING_ERROR 30            //The average error over SAMPLING_SIZE samples to consider the beacon found
-#define PICKUP_STRENGTH 100          //The minimum strength at which a signal is considered to be coming from the beacon
-#define STOPPING_STRENGTH 2000       //The strength at which the beacon is considered found, and the robot is ready to drop the can
-#define POINT_AT_BEACON_TIMEOUT 3000 //Milliseconds before giving up on finding the beacon
+#define STOPPING_ERROR 30             //The average error over SAMPLING_SIZE samples to consider the beacon found
+#define PICKUP_STRENGTH 1600          //The minimum strength at which a signal is considered to be coming from the beacon
+#define STOPPING_STRENGTH 4000        //The strength at which the beacon is considered found, and the robot is ready to drop the can
+#define POINT_AT_BEACON_TIMEOUT 30000 //Milliseconds before giving up on finding the beacon
 
 // PID Sonar values
 #define SONAR_FOUND_BIN 10   //cm
@@ -31,8 +31,8 @@
 
 bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
 {
-    int reading_r = analogRead(IR_RIGHT);
-    int reading_l = analogRead(IR_LEFT);
+    int reading_r = read_ir(IR_RIGHT);
+    int reading_l = read_ir(IR_LEFT);
 
     uint32_t start_time = millis();
 
@@ -50,8 +50,8 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
     //rotate until  a signal is picked up, or until timing out
     while (strength < PICKUP_STRENGTH)
     {
-        reading_r = analogRead(IR_RIGHT);
-        reading_l = analogRead(IR_LEFT);
+        reading_r = read_ir(IR_RIGHT);
+        reading_l = read_ir(IR_LEFT);
 
         strength = reading_l + reading_r;
 
@@ -73,15 +73,15 @@ bool pointAtBeacon(int angular_speed, Adafruit_SSD1306 display)
         }
     }
     // Found the beacon
-    stop();
+    hard_stop();
 
     return true;
 }
 
 bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
 {
-    int reading_r = analogRead(IR_RIGHT);
-    int reading_l = analogRead(IR_LEFT);
+    int reading_r = read_ir(IR_RIGHT);
+    int reading_l = read_ir(IR_LEFT);
 
     if (IR_DEBUG)
     {
@@ -112,8 +112,8 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
     // while(abs(error) > STOPPING_ERROR || strength < STOPPING_STRENGTH)
     while (true)
     {
-        reading_r = analogRead(IR_RIGHT);
-        reading_l = analogRead(IR_LEFT);
+        reading_r = read_ir(IR_RIGHT);
+        reading_l = read_ir(IR_LEFT);
 
         error = reading_r - reading_l;
 
@@ -135,6 +135,7 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
 
         speed = (int)(p + d) * GAIN;
 
+        /*
         while (digitalRead(START_BUTTON) == LOW)
         {
             stop();
@@ -152,6 +153,7 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
             display.display();
             delay(10);
         }
+        */
 
         // Make sure derivative error list is fully initiallized
         if (num_loops >= SAMPLING_SIZE)
@@ -163,11 +165,13 @@ bool pidToBeacon(Adafruit_SSD1306 display, sonarWrapper sonar)
         {
             stop();
             sonar_read = sonar.readSonar();
+            /*
             display.clearDisplay();
             display.setCursor(0, 0);
             display.println("Sonar Read:");
             display.println(sonar_read);
             display.display();
+            */
             if (sonar_read <= SONAR_FOUND_BIN && abs(error) < STOPPING_ERROR)
             {
                 break;
@@ -212,8 +216,8 @@ void IRDebug(Adafruit_SSD1306 display)
 
     while (true)
     {
-        reading_r = analogRead(IR_RIGHT);
-        reading_l = analogRead(IR_LEFT);
+        reading_r = read_ir(IR_RIGHT);
+        reading_l = read_ir(IR_LEFT);
         error = reading_r - reading_l;
         strength = reading_r + reading_l;
 
@@ -229,4 +233,12 @@ void IRDebug(Adafruit_SSD1306 display)
         display.println(strength);
         display.display();
     }
+}
+
+/*
+* reverses the analogRead to give IR strength.
+*/
+int read_ir(int pin)
+{
+    return 1024 - analogRead(pin);
 }

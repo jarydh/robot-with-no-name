@@ -59,7 +59,7 @@ void setup()
   claw.pickUpCan();
   // delay(5000);
   pointAtBeacon(40, display);
-  pidToBeacon(display, sonar_wrapper);
+  // pidToBeacon(display, sonar_wrapper);
   claw.dropCan();
 };
 
