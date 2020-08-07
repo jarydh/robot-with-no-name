@@ -8,7 +8,7 @@
 #include <Adafruit_SSD1306.h>
 #include <math.h>
 
-#define IR_DEBUG 1
+#define IR_DEBUG 0
 
 // IR values
 #define STOPPING_ERROR 30            //The average error over SAMPLING_SIZE samples to consider the beacon found
