@@ -53,10 +53,10 @@
 
 // positive values make it turn more right, negative more left. Adjust until movement is straight.
 // note that large values may cause odd behaviour at very low speeds.
-#define MOTOR_OFFSET 0
+#define MOTOR_OFFSET -200
 
 // Min and max PWM values
-#define MIN_MOTOR_PWM 24000 // Note this will need to be adjusted for the friction on the wheels and the voltage
+#define MIN_MOTOR_PWM 20000 // Note this will need to be adjusted for the friction on the wheels and the voltage
 #define MAX_MOTOR_PWM 65000
 
 #define SPEED_RESOLUTION 1000
@@ -85,6 +85,6 @@
 #define SONAR_MIN_RANGE 8 // cm
 
 #define FINAL_CAN_TURN_IN_DELAY 75
-#define FINAL_CAN_STRAIGHT_IN_DELAY 165
+#define FINAL_CAN_STRAIGHT_IN_DELAY 50
 
 #endif

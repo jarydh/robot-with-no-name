@@ -130,7 +130,7 @@ do
     delay(100);
 
     drive(-100, 0);
-    delay(50);
+    delay(75);
     stop();
     delay(50);
 
@@ -141,10 +141,13 @@ do
     delay(50);
 
     // drive towards can
-    drive(CAN_FINDING_SPEED, 0);
-    delay(FINAL_CAN_STRAIGHT_IN_DELAY);
-    stop();
-    delay(50);
+    while(read_sonar() > 10)
+    {
+        drive(CAN_FINDING_SPEED, 0);
+        delay(FINAL_CAN_STRAIGHT_IN_DELAY);
+        stop();
+        delay(50);
+    }
 
     return true;
 }
@@ -166,7 +169,7 @@ int CanFinder::read_sonar()
 bool CanFinder::check_can()
 {
     return true;
-    int last = last_sonar;
-    int current = read_sonar();
-    return abs(last - current) > CHECK_CAN_THRESHOLD;
+    // int last = last_sonar;
+    // int current = read_sonar();
+    // return abs(last - current) > CHECK_CAN_THRESHOLD;
 }

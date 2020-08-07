@@ -25,7 +25,7 @@
 #define P_GAIN 3
 #define D_GAIN 100
 
-#define PID_TIMEOUT_MS 15000  // PID timeout
+#define PID_TIMEOUT_MS 10000  // PID timeout
 
 #define SAMPLING_SIZE 5 //the number of samples used to determine the derivative_error_sum
 
